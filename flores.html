@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flores Pixeladas Animadas con Texto Personalizado</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="flowerCanvas" width="600" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('flowerCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const colors = {
+            cafe1: "#6D4C41", cafe2: "#5D4037", cafe3: "#4E342E", cafe4: "#3E2723",
+            verde1: "#00FF00", verde2: "#229954", verde3: "#006600",
+            blanco: "white",
+            amarillo1: "#FFEB3B", amarillo2: "#FFCA28", amarillo3: "#FFA000",
+            rojo1: "#FF0000", rojo2: "#E53935", rojo3: "#B71C1C",
+            celeste: "#E6F3FF",
+            rosa: "#FF69B4"
+        };
+
+        function drawSquare(x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, 30, 30);
+        }
+
+        function drawMaceta(x, y) {
+            const pattern = [
+                [1,2,3,3,3,4],
+                [1,1,2,1,3,4],
+                [1,1,1,2,3,4],
+                [1,1,2,3,2,4],
+                [1,2,1,1,3,2],
+                [1,1,1,2,1,2]
+            ];
+            
+            return new Promise(resolve => {
+                let i = 0, j = 0;
+                function drawNextSquare() {
+                    if (i < pattern.length) {
+                        drawSquare(x + j * 30, y + (5 - i) * 30, colors[`cafe${pattern[i][j]}`]);
+                        j++;
+                        if (j >= pattern[i].length) {
+                            i++;
+                            j = 0;
+                        }
+                        setTimeout(drawNextSquare, 50);
+                    } else {
+                        resolve();
+                    }
+                }
+                drawNextSquare();
+            });
+        }
+
+        function drawFlower(startX, startY, flowerType) {
+            const flowerPatterns = {
+                yellow: [
+                    [0,0,1,1,1,0,0],
+                    [0,1,2,1,3,1,0],
+                    [0,1,1,1,2,1,0],
+                    [0,1,2,1,1,1,0],
+                    [0,0,1,1,1,0,0]
+                ],
+                red: [
+                    [0,1,1,1,1,3,0],
+                    [1,1,2,3,2,1,3],
+                    [1,2,3,2,1,2,0],
+                    [0,1,2,3,3,0,0]
+                ]
+            };
+
+            const pattern = flowerPatterns[flowerType];
+            const colorMap = flowerType === 'yellow' 
+                ? {1: 'blanco', 2: 'amarillo2', 3: 'amarillo1'}
+                : {1: 'rojo1', 2: 'rojo2', 3: 'rojo3'};
+
+            return new Promise(resolve => {
+                let i = 0, j = 0;
+                function drawNextSquare() {
+                    if (i < pattern.length) {
+                        if (pattern[i][j] !== 0) {
+                            drawSquare(startX + j * 30, startY + i * 30, colors[colorMap[pattern[i][j]]]);
+                        }
+                        j++;
+                        if (j >= pattern[i].length) {
+                            i++;
+                            j = 0;
+                        }
+                        setTimeout(drawNextSquare, 50);
+                    } else {
+                        resolve();
+                    }
+                }
+                drawNextSquare();
+            });
+        }
+
+        function drawStem(startX, startY, pattern) {
+            return new Promise(resolve => {
+                let i = 0, j = 0;
+                function drawNextSquare() {
+                    if (i < pattern.length) {
+                        if (pattern[i][j] !== 0) {
+                            drawSquare(startX + j * 30, startY + i * 30, colors[`verde${pattern[i][j]}`]);
+                        }
+                        j++;
+                        if (j >= pattern[i].length) {
+                            i++;
+                            j = 0;
+                        }
+                        setTimeout(drawNextSquare, 50);
+                    } else {
+                        resolve();
+                    }
+                }
+                drawNextSquare();
+            });
+        }
+
+        function drawText(text) {
+            return new Promise(resolve => {
+                ctx.font = '48px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                let opacity = 0;
+                function fadeIn() {
+                    ctx.clearRect(0, canvas.height - 60, canvas.width, 60);  // Limpiar solo el área del texto
+                    ctx.globalAlpha = opacity;
+                    
+                    // Dibujar el fondo celeste
+                    ctx.fillStyle = colors.celeste;
+                    ctx.fillRect(0, canvas.height - 60, canvas.width, 60);
+                    
+                    // Dibujar el texto rosa
+                    ctx.fillStyle = colors.rosa;
+                    ctx.fillText(text, canvas.width / 2, canvas.height - 30);
+                    
+                    opacity += 0.05;
+                    if (opacity < 1) {
+                        requestAnimationFrame(fadeIn);
+                    } else {
+                        ctx.globalAlpha = 1;
+                        resolve();
+                    }
+                }
+                fadeIn();
+            });
+        }
+
+        // Función principal para dibujar la escena
+        async function drawScene() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Flor amarilla
+            await drawMaceta(0, 420);
+            await drawStem(60, 180, [
+                [0,1,0,0],
+                [0,1,2,0],
+                [2,1,2,2],
+                [1,1,1,2],
+                [0,1,0,0],
+                [0,1,0,0],
+                [0,1,0,0]
+            ]);
+            await drawFlower(30, 30, 'yellow');
+
+            // Flor roja
+            await drawMaceta(330, 420);
+            await drawStem(390, 180, [
+                [3,3,0,0,0,0,0],
+                [3,3,3,3,0,0,0],
+                [3,3,0,1,0,3,3],
+                [0,3,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0]
+            ]);
+            await drawFlower(360, 30, 'red');
+
+            // Añadir el texto al final
+            await drawText("for you <3");
+        }
+
+        // Iniciar la animación
+        drawScene();
+    </script>
+</body>
+</html>

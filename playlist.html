@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Playlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Celeste claro */
+            color: #ff69b4; /* Rosa */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .contenido {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        iframe {
+            width: 100%;
+            height: 380px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Esta es tu playlist</h1>
+
+    <p> Espero que te gusten las canciones y no te preocupes dia a dia estare añadiendote mas canciones.</p>
+
+    <div class="contenido">
+        <!-- Embed de Spotify para la previsualización de la playlist -->
+        <iframe src="https://open.spotify.com/embed/playlist/73X3A2BXWW0lKB1yRnDeXw?utm_source=generator" 
+                frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy"></iframe>
+
+        <!-- Botón para redirigir a la playlist completa -->
+        <a href="https://open.spotify.com/playlist/73X3A2BXWW0lKB1yRnDeXw?si=a48dce2848b24e10" target="_blank">
+            <button>Escuchar en Spotify</button>
+        </a>
+    </div>
+
+    <footer>
+        <p>by yozef - © 2024</p>
+    </footer>
+</body>
+</html>
